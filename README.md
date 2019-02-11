@@ -6,8 +6,8 @@
 [![analysis](https://img.shields.io/badge/analysis-tslint-9cf.svg)](https://palantir.github.io/tslint/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![testing](https://img.shields.io/badge/testing-jest-blue.svg)](https://facebook.github.io/jest/)
-[![NPM](https://img.shields.io/npm/v/util.toolbox.svg)](https://www.npmjs.com/package/util.toolbox)
-[![coverage](https://coveralls.io/repos/github/jmquigley/util.toolbox/badge.svg?branch=master)](https://coveralls.io/github/jmquigley/util.toolbox?branch=master)
+[![NPM](https://img.shields.io/npm/v/util.treeitem.svg)](https://www.npmjs.com/package/util.treeitem)
+[![coverage](https://coveralls.io/repos/github/jmquigley/util.treeitem/badge.svg?branch=master)](https://coveralls.io/github/jmquigley/util.treeitem?branch=master)
 
 This module is a support module for use with the [gadgets](https://github.com/jmquigley/gadgets) library [Treeview](https://github.com/jmquigley/gadgets/blob/master/docs/lib/treeview/Treeview.md) React component.  It provides functions for maintaning and manipulating the treeData object structure.
 
