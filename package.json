@@ -5,7 +5,7 @@
 	"description": "Utility functions for working with the Treeview component in the gadgets library",
 	"main": "./index.js",
 	"types": "./index.d.ts",
-	"private": true,
+	"private": false,
 	"license": "MIT",
 	"repository": {
 		"type": "git",
