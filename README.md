@@ -33,13 +33,13 @@ $ yarn run all
 
 The treeData is an array of TreeItem nodes.  A `TreeItem` node (dict) contains the following properties:
 
-- id - {stromg} a unique id/key value for the node
-- parent - {TreeItem} reference to the parent node
-- data - {any} a variable to hold any data associated with the node (can hold any type of data)
-- title - {string} a string that represents the title displayed on the Treeview component
-- subtitle - {string} sub string below the main title.
-- expanded - {boolean} a boolean flag that determines if the children of this node are displayed
-- children - {TreeItem[]} an array of `TreeItem` nodes attached to this node.
+- `id {stromg}` - a unique id/key value for the node
+- `parent {TreeItem}` - reference to the parent node
+- `data {any}` - a variable to hold any data associated with the node (can hold any type of data)
+- `title {string}` - a string that represents the title displayed on the Treeview component
+- `subtitle {string}` - sub string below the main title.
+- `expanded {boolean}` - a boolean flag that determines if the children of this node are displayed
+- `children {TreeItem[]}` - an array of `TreeItem` nodes attached to this node.
 
 An example of this data structure is:
 
