@@ -1,0 +1,36 @@
+{
+	"compileOnSave": true,
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"alwaysStrict": true,
+		"baseUrl": ".",
+		"declaration": true,
+		"experimentalDecorators": true,
+		"inlineSourceMap": true,
+		"jsx": "react",
+		"lib": ["DOM", "ESNext"],
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"removeComments": false,
+		"skipLibCheck": true,
+		"sourceMap": false,
+		"strictNullChecks": false,
+		"suppressImplicitAnyIndexErrors": true,
+		"module": "commonjs",
+		"target": "es6"
+	},
+	"exclude": [
+		"build",
+		"coverage",
+		"dist",
+		"docs",
+		"packages",
+		"node_modules",
+		"tmp",
+		"**/__tests__/*",
+		"**/*.test.tsx",
+		"**/*.test.ts"
+	]
+}
