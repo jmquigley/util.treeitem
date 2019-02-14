@@ -3,6 +3,7 @@ node_modules/
 test/
 __tests__
 docs
+logs
 tsconfig.json
 tslint.json
 .travis.yml

@@ -7,7 +7,6 @@
 		"declaration": true,
 		"experimentalDecorators": true,
 		"inlineSourceMap": true,
-		"jsx": "react",
 		"lib": ["DOM", "ESNext"],
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
