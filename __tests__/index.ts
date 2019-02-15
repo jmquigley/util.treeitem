@@ -35,6 +35,8 @@ test("Test the create node function", () => {
 	const td = new TreeData(null, true);
 	expect(td).toBeDefined();
 
+	td.defaultTitle = "test title";
+
 	const node = td.createNode();
 	expect(node).toBeDefined();
 	expect(node).toHaveProperty("id");
@@ -45,7 +47,7 @@ test("Test the create node function", () => {
 	expect(node).toHaveProperty("expanded");
 	expect(node).toHaveProperty("children");
 
-	expect(node.title).toBe("default");
+	expect(node.title).toBe("test title");
 	expect(node.subtitle).toBe("");
 	expect(node.expanded).toBe(true);
 	expect(node.id).toBe("0");
@@ -117,6 +119,8 @@ test("Test the walk function on a basic TreeItem fixture object", () => {
 
 	expect(out).toBeDefined();
 	expect(out).toBe("1.0 1.1 1.2 1.3 2.0 2.1 2.2 2.3 3.0 3.1 3.2 3.3");
+
+	log.debug("%s", td.toString());
 });
 
 test("Call walk function with bad callback", () => {
@@ -147,8 +151,10 @@ test("Test searching for an id within the tree", () => {
 
 	const td = new TreeData(fixture.obj["treeData"]);
 	expect(td).toBeDefined();
+	td.treeIndex = {};
 
 	// Parent item from tree, found
+	expect("4" in td.treeIndex).not.toBe(true);
 	let it: TreeItem = td.find(4);
 	expect(it).toBeDefined();
 	expect(it.title).toBe("2.0");
@@ -167,6 +173,15 @@ test("Test searching for an id within the tree", () => {
 	// Item should not be found in the tree
 	it = td.find(127);
 	expect(it).toBeNull();
+
+	// Call previous id value to show that it uses the index
+	expect("4" in td.treeIndex).toBe(true);
+	it = td.find(4);
+	expect(it).toBeDefined();
+	expect(it.title).toBe("2.0");
+	expect(it.expanded).toBe(true);
+	expect(it.children.length).toBe(3);
+	expect(it.parent.id).toBeNull();
 });
 
 test("Test using the current TreeData index to find values", () => {

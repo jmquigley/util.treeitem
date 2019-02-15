@@ -23,12 +23,12 @@ All of the parent/child keys are set if they are not available.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| treeData | <code>Array.&lt;TreeItem&gt;</code> |  | the data that represents the current general tree. |
-| _testing | <code>boolean</code> | <code>false</code> | (false) set to true when this class is under test.  This is needed to generate predicatble keys instead of UUID values |
-| _sequence | <code>number</code> | <code>0</code> | (0) the starting sequence number in key generation when the class is under test. |
-| _defaultTitle | <code>string</code> | <code>&quot;default&quot;</code> | ("default") the default string loadeed into the TreeItem.title field when a new node is created or sanitized. |
-| _useindex | <code>boolean</code> | <code>true</code> | (true) turns on a map index of the node values that are loaded into the tree.  Used for a fast id lookup. |
-| _usesanitize | <code>boolean</code> | <code>true</code> | (true) when new nodes are processed by the walk function each node is checked by default to ensure parent/child keys are set and all fields are in the TreeItem. |
+| treeData | <code>Array.&lt;TreeItem&gt;</code> |  | the data that represents the current general tree.  This field is mandatory when instantiating the class. |
+| _testing | <code>boolean</code> | <code>false</code> | set to true when this class is under test.  This is needed to generate predicatble keys instead of UUID values. |
+| _sequence | <code>number</code> | <code>0</code> | the starting sequence number in key generation when the class is under test. |
+| _defaultTitle | <code>string</code> | <code>&quot;default&quot;</code> | the default string loadeed into the TreeItem.title field when a new node is created or sanitized. |
+| _useindex | <code>boolean</code> | <code>true</code> | turns on a map index of the node values that are loaded into the tree.  Used for a fast id lookup. |
+| _usesanitize | <code>boolean</code> | <code>true</code> | when new nodes are processed by the walk function each node is checked by default to ensure parent/child keys are set and all fields are in the TreeItem. |
 
 <a name="TreeData+createNode"></a>
 

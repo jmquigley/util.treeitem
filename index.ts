@@ -58,16 +58,16 @@ export class TreeData {
 	 *
 	 * @contructor
 	 * @param treeData {TreeItem[]} the data that represents the current general
-	 * tree.
-	 * @param _testing {boolean} (false) set to true when this class is under
-	 * test.  This is needed to generate predicatble keys instead of UUID values
-	 * @param _sequence {number} (0) the starting sequence number in key generation
+	 * tree.  This field is mandatory when instantiating the class.
+	 * @param _testing {boolean} set to true when this class is under
+	 * test.  This is needed to generate predicatble keys instead of UUID values.
+	 * @param _sequence {number} the starting sequence number in key generation
 	 * when the class is under test.
-	 * @param _defaultTitle {string} ("default") the default string loadeed into
+	 * @param _defaultTitle {string} the default string loadeed into
 	 * the TreeItem.title field when a new node is created or sanitized.
-	 * @param _useindex {boolean} (true) turns on a map index of the node values
+	 * @param _useindex {boolean} turns on a map index of the node values
 	 * that are loaded into the tree.  Used for a fast id lookup.
-	 * @param _usesanitize {boolean} (true) when new nodes are processed by
+	 * @param _usesanitize {boolean} when new nodes are processed by
 	 * the walk function each node is checked by default to ensure parent/child
 	 * keys are set and all fields are in the TreeItem.
 	 */
@@ -84,6 +84,10 @@ export class TreeData {
 
 	get defaultTitle(): string {
 		return this._defaultTitle;
+	}
+
+	set defaultTitle(val: string) {
+		this._defaultTitle = val;
 	}
 
 	get sequence(): number {
@@ -112,6 +116,10 @@ export class TreeData {
 
 	get treeIndex(): TreeIndex {
 		return this._treeIndex;
+	}
+
+	set treeIndex(val: TreeIndex) {
+		this._treeIndex = val;
 	}
 
 	get useindex(): boolean {
@@ -150,6 +158,10 @@ export class TreeData {
 		if (this.treeData == null || this.treeData.length < 1) {
 			log.warn("treeData is empty");
 			return null;
+		}
+
+		if (this._useindex && id in this._treeIndex) {
+			return this._treeIndex[id];
 		}
 
 		let children: TreeItem[] = this.treeData;
@@ -238,7 +250,13 @@ export class TreeData {
 	 * @return {string} a string representing the tree structure.
 	 */
 	public toString(): string {
-		let s: string = nl;
+		let s: string = `TreeData:${nl}`;
+
+		s += `testing: ${this._testing}${nl}`;
+		s += `sequence: ${this._sequence}${nl}`;
+		s += `defaultTitle: ${this._defaultTitle}${nl}`;
+		s += `useindex: ${this._useindex}${nl}`;
+		s += `usesanitize: ${this._usesanitize}${nl}`;
 
 		this.walk((it: TreeItem) => {
 			let parentId: TreeId = "";

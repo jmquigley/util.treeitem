@@ -100,7 +100,20 @@ let it: TreeItem = td.treeIndex[2];
 # API
 
 - [TreeData (class)](docs/index.md#TreeData)
-- [TreeData (properties)](docs/index.md#new_TreeData_new)
+- [TreeData (new)](docs/index.md#new_TreeData_new)
+
+### properties
+
+- `defaultTitle {string} ('default')` - the default string loaded into the TreeItem.title field when a new node is created or sanitized (when the title is empty).
+- `sequence {number} (0)` - the starting sequence number in key generation when the class is under test
+- `testing {boolean} (false)` - set to true when this class is under test.  This is needed to generate predicatble keys instead of UUID values.
+- `treeData {TreeItem[]}` - the data that represents the current general tree
+- `treeIndex {TreeIndex}` - a key/node value pair used to quickly look up a node by its unique id value.
+- `useindex {boolean} (true)` - turns on node indexing when walking the tree or finding nodes
+- `usesanitize {boolean} (true)` - if true, then run sanitization on nodes when walking the tree.  This ensures that all of the parent/child key relationships are in place and that all valid TreeItem fields are in the objects (with default values if they are missing).
+
+### methods
+
 - [.createNode()](docs/index.md#TreeData+createNode)
 - [.find()](docs/index.md#TreeData+find)
 - [.getNewKey()](docs/index.md#TreeData+getNewKey)
