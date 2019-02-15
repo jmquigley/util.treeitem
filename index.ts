@@ -42,10 +42,27 @@ export class TreeData {
 
 	constructor(
 		treeData: TreeItem[],
-		private testing: boolean = false,
-		private sequence: number = 0
+		private _testing: boolean = false,
+		private _sequence: number = 0,
+		private _defaultTitle: string = "default"
 	) {
 		this.treeData = treeData;
+	}
+
+	get defaultTitle(): string {
+		return this._defaultTitle;
+	}
+
+	get sequence(): number {
+		return this._sequence;
+	}
+
+	set sequence(val: number) {
+		this._sequence = val;
+	}
+
+	get testing(): boolean {
+		return this._testing;
 	}
 
 	get treeData(): TreeItem[] {
@@ -57,12 +74,21 @@ export class TreeData {
 		this.walk(nilEvent);
 	}
 
+	public createNode(parentNode: TreeItem): TreeItem {
+		return {
+			children: [],
+			expanded: true,
+			id: this.getNewKey(),
+			data: "",
+			parent: parentNode == null ? nullParent : parentNode,
+			subtitle: "",
+			title: this._defaultTitle
+		};
+	}
+
 	/**
 	 * Performs a breadth search of the tree for a matching id value.
-	 * @param compare {ComparatorFn} compaaison function provided by the specialized
-	 * search routine.
 	 * @param id {string} the id value to search for
-	 * @param treeData {TreeItem[]} the tree struture to search
 	 * @return {TreeItem} of the item found otherwise null
 	 */
 	public find(id: TreeId): TreeItem {
@@ -100,8 +126,8 @@ export class TreeData {
 	 * the keys predictable when the code is under test.
 	 * @return {string} the new key value.
 	 */
-	private getNewKey(): string {
-		if (this.testing) {
+	public getNewKey(): string {
+		if (this._testing) {
 			log.debug(`Creating testing key with sequence: ${this.sequence}`);
 			return `${this.sequence++}`;
 		}
@@ -117,11 +143,9 @@ export class TreeData {
 	 * When testing the keys are generated as a sequence instead of as a UUID
 	 * @param defaultTitle {string} ('default') a default string set for the
 	 * title if it doesn't exist or is empty.
+	 * @return {TreeItem} a referece back of the node that was sanitized
 	 */
-	public sanitize(
-		node: TreeItem,
-		defaultTitle: string = "default"
-	): TreeItem {
+	public sanitize(node: TreeItem): TreeItem {
 		if (!("parent" in node)) {
 			node["parent"] = nullParent;
 		}
@@ -131,7 +155,7 @@ export class TreeData {
 		}
 
 		if (!("title" in node) || node["title"] == null) {
-			node["title"] = defaultTitle;
+			node["title"] = this._defaultTitle;
 		}
 
 		if (!("subtitle" in node)) {
@@ -156,8 +180,6 @@ export class TreeData {
 	/**
 	 * Prints the internals of the current tree.  It will print the id, the
 	 * parent id, and the title for each node.
-	 * @param treeData {TreeItem[]} the tree data structure to create as a
-	 * string
 	 * @return {string} a string representing the tree structure.
 	 */
 	public toString(): string {
@@ -189,8 +211,13 @@ export class TreeData {
 	 * processed.
 	 */
 	public walk(fn: WalkCallback, usesanitize: boolean = true): TreeItem[] {
-		if (typeof fn !== "function") {
+		if (fn != null && typeof fn !== "function") {
 			throw new Error("walk() parameter must be a function");
+		}
+
+		if (this.treeData == null) {
+			log.warn("treeData is empty");
+			return null;
 		}
 
 		const self: any = this;

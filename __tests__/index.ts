@@ -1,7 +1,8 @@
 "use strict";
 
-import logger from "util.log";
+import {nl} from "util.constants";
 import {Fixture} from "util.fixture";
+import logger from "util.log";
 import {TreeData, TreeItem} from "../index";
 
 const pkg = require("../package.json");
@@ -11,6 +12,91 @@ const log = logger.instance({
 });
 const testing: boolean = true;
 
+test("Test using an empty TreeData structure", () => {
+	const td = new TreeData(null);
+	expect(td).toBeDefined();
+
+	const it: TreeItem = td.find(22);
+	expect(it).toBeNull();
+});
+
+test("Test the getNewKey function", () => {
+	const td = new TreeData(null, true);
+	expect(td).toBeDefined();
+	expect(td.testing).toBe(true);
+	expect(td.defaultTitle).toBe("default");
+	expect(td.treeData).toBeNull();
+	expect(td.getNewKey()).toBe("0");
+	expect(td.getNewKey()).toBe("1");
+	expect(td.getNewKey()).toBe("2");
+});
+
+test("Test the create node function", () => {
+	const td = new TreeData(null, true);
+	expect(td).toBeDefined();
+
+	const node = td.createNode(null);
+	expect(node).toBeDefined();
+	expect(node).toHaveProperty("id");
+	expect(node).toHaveProperty("data");
+	expect(node).toHaveProperty("parent");
+	expect(node).toHaveProperty("title");
+	expect(node).toHaveProperty("subtitle");
+	expect(node).toHaveProperty("expanded");
+	expect(node).toHaveProperty("children");
+
+	expect(node.title).toBe("default");
+	expect(node.subtitle).toBe("");
+	expect(node.expanded).toBe(true);
+	expect(node.id).toBe("0");
+	expect(node.parent).toBeDefined();
+	expect(node.data).toBe("");
+	expect(node.children).toBeInstanceOf(Array);
+	expect(node.children.length).toBe(0);
+});
+
+test("Test the create node function with parent object", () => {
+	const td = new TreeData(null, true);
+	expect(td).toBeDefined();
+
+	const parentNode = td.createNode(null);
+	const node = td.createNode(parentNode);
+
+	expect(node).toBeDefined();
+	expect(node).toHaveProperty("id");
+	expect(node).toHaveProperty("data");
+	expect(node).toHaveProperty("parent");
+	expect(node).toHaveProperty("title");
+	expect(node).toHaveProperty("subtitle");
+	expect(node).toHaveProperty("expanded");
+	expect(node).toHaveProperty("children");
+
+	expect(node.title).toBe("default");
+	expect(node.subtitle).toBe("");
+	expect(node.expanded).toBe(true);
+	expect(node.id).toBe("1");
+	expect(node.parent).toBeDefined();
+	expect(node.parent.id).toBe("0");
+	expect(node.data).toBe("");
+	expect(node.children).toBeInstanceOf(Array);
+	expect(node.children.length).toBe(0);
+});
+
+test("Test the sanitize function", () => {
+	const td = new TreeData(null, true);
+	expect(td).toBeDefined();
+
+	const it: TreeItem = td.sanitize({});
+
+	expect(it).toHaveProperty("id");
+	expect(it).toHaveProperty("data");
+	expect(it).toHaveProperty("parent");
+	expect(it).toHaveProperty("title");
+	expect(it).toHaveProperty("subtitle");
+	expect(it).toHaveProperty("expanded");
+	expect(it).toHaveProperty("children");
+});
+
 test("Test the walk function on a basic TreeItem fixture object", () => {
 	const fixture = new Fixture("basic");
 	expect(fixture).toBeDefined();
@@ -18,38 +104,31 @@ test("Test the walk function on a basic TreeItem fixture object", () => {
 
 	const td = new TreeData(fixture.obj["treeData"]);
 	expect(td).toBeDefined();
+	expect(td.toString()).toBeDefined();
+	expect(typeof td.toString()).toBe("string");
 
 	// Walk through the tree.  Concatenate the title values together
 	// to create a string that can be compared for ordering
 	let out: string = "";
 	td.walk((it: TreeItem) => {
 		out += `${it.title} `;
-	});
+	}, false);
 	out = out.trim();
 
 	expect(out).toBeDefined();
 	expect(out).toBe("1.0 1.1 1.2 1.3 2.0 2.1 2.2 2.3 3.0 3.1 3.2 3.3");
 });
 
-test("Test the sanitize function on a basic TreeItem fixture object", () => {
+test("Call walk function with bad callback", () => {
 	const fixture = new Fixture("basic");
 	expect(fixture).toBeDefined();
 	expect(fixture.obj).toBeDefined();
 
 	const td = new TreeData(fixture.obj["treeData"]);
 	expect(td).toBeDefined();
-
-	td.walk((it: TreeItem) => {
-		const newIt = td.sanitize(it, testing);
-
-		expect(newIt).toHaveProperty("id");
-		expect(newIt).toHaveProperty("data");
-		expect(newIt).toHaveProperty("parent");
-		expect(newIt).toHaveProperty("title");
-		expect(newIt).toHaveProperty("subtitle");
-		expect(newIt).toHaveProperty("expanded");
-		expect(newIt).toHaveProperty("children");
-	}, false); // turn off sanitize
+	expect(() => {
+		td.walk(null);
+	}).toThrow(Error);
 });
 
 test("Test searching for an id within the tree", () => {
@@ -60,32 +139,23 @@ test("Test searching for an id within the tree", () => {
 	const td = new TreeData(fixture.obj["treeData"]);
 	expect(td).toBeDefined();
 
-	// Item should be found in the tree
+	// Parent item from tree, found
 	let it: TreeItem = td.find(4);
 	expect(it).toBeDefined();
-	log.debug("TreeItem -> %O", it);
-
 	expect(it.title).toBe("2.0");
 	expect(it.expanded).toBe(true);
 	expect(it.children.length).toBe(3);
 	expect(it.parent.id).toBeNull();
 
+	// Search for child in tree, found
+	it = td.find(9);
+	expect(it).toBeDefined();
+	expect(it.title).toBe("3.1");
+	expect(it.expanded).toBe(true);
+	expect(it.children.length).toBe(0);
+	expect(it.parent.id).toBe(8);
+
 	// Item should not be found in the tree
 	it = td.find(127);
 	expect(it).toBeNull();
 });
-
-// test("Test assignment of parent/child relationships after walk", () => {
-// 	const fixture = new Fixture("predictable");
-// 	expect(fixture).toBeDefined();
-// 	expect(fixture.obj).toBeDefined();
-//
-// 	let out: string = "";
-// 	walk(fixture.obj["treeData"], (it: TreeItem) => {
-// 		out += `${it.title} `;
-// 	});
-// 	out = out.trim();
-//
-// 	expect(out).toBeDefined();
-// 	expect(out).toBe("1.0 1.1 1.2 2.0 2.1 2.2");
-// });
