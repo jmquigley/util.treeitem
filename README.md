@@ -94,7 +94,6 @@ The `walk` function will visit each node in the tree in order invoking a callbac
 # API
 
 - [TreeData (class)](docs/index.md#TreeData)
-
 - [.createNode()](docs/index.md#TreeData+createNode)
 - [.find()](docs/index.md#TreeData+find)
 - [.getNewKey()](docs/index.md#TreeData+getNewKey)
