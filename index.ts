@@ -1,3 +1,9 @@
+/**
+ * This module contains all of the code to create and manipulate the TreeData
+ * structure used by a Treeview react control in the gadgets library.
+ *
+ */
+
 "use strict";
 
 import {nl} from "util.constants";
@@ -40,6 +46,15 @@ const nullParent: TreeItem = {
 export class TreeData {
 	private _treeData: TreeItem[];
 
+	/**
+	 * Creates an instance of the TreeData class.  When the data is loaded via
+	 * the constructor the full tree is traversed and the nodes are sanitized.
+	 * All of the parent/child keys are set if they are not available.
+	 *
+	 * @contructor
+	 * @param treeData {TreeItem[]} the data that represents the current general
+	 * tree.
+	 */
 	constructor(
 		treeData: TreeItem[],
 		private _testing: boolean = false,
@@ -74,7 +89,12 @@ export class TreeData {
 		this.walk(nilEvent);
 	}
 
-	public createNode(parentNode: TreeItem): TreeItem {
+	/**
+	 * Creates a new node object with default properties.
+	 * @param parentNode a parent node associated with this instance
+	 * @return {TreeItem} a new node instance reference
+	 */
+	public createNode(parentNode: TreeItem = null): TreeItem {
 		return {
 			children: [],
 			expanded: true,
