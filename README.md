@@ -88,12 +88,19 @@ td.walk((node: TreeItem) => {
 });
 ```
 
-The `walk` function will visit each node in the tree in order invoking a callback function as each node is encountered.  The callback receives a reference to each node.
+The `walk` function will visit each node in the tree in order invoking a callback function as each node is encountered.  The callback receives a reference to each node.  If the `useindex` property is set when the class is created, which it is by default, then an id-to-node index is created.  The `treeIndex` property can be used to quickly find a node by its index:
+
+```javascript
+let it: TreeItem = td.treeIndex[2];
+
+// it -> {id: 2, title: "3.0", children: []}
+```
 
 
 # API
 
 - [TreeData (class)](docs/index.md#TreeData)
+- [TreeData (properties)](docs/index.md#new_TreeData_new)
 - [.createNode()](docs/index.md#TreeData+createNode)
 - [.find()](docs/index.md#TreeData+find)
 - [.getNewKey()](docs/index.md#TreeData+getNewKey)

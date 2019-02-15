@@ -35,7 +35,7 @@ test("Test the create node function", () => {
 	const td = new TreeData(null, true);
 	expect(td).toBeDefined();
 
-	const node = td.createNode(null);
+	const node = td.createNode();
 	expect(node).toBeDefined();
 	expect(node).toHaveProperty("id");
 	expect(node).toHaveProperty("data");
@@ -126,9 +126,18 @@ test("Call walk function with bad callback", () => {
 
 	const td = new TreeData(fixture.obj["treeData"]);
 	expect(td).toBeDefined();
-	expect(() => {
-		td.walk(null);
-	}).toThrow(Error);
+
+	const treeData: TreeItem[] = td.walk(null);
+	expect(treeData).toBeNull();
+});
+
+test("Call walk function with null treeData", () => {
+	const td = new TreeData(null);
+	expect(td).toBeDefined();
+	expect(td.treeData).toBeNull();
+
+	const treeData: TreeItem[] = td.walk((it: TreeItem) => {});
+	expect(treeData).toBeNull();
 });
 
 test("Test searching for an id within the tree", () => {
@@ -158,4 +167,37 @@ test("Test searching for an id within the tree", () => {
 	// Item should not be found in the tree
 	it = td.find(127);
 	expect(it).toBeNull();
+});
+
+test("Test using the current TreeData index to find values", () => {
+	const fixture = new Fixture("search");
+	expect(fixture).toBeDefined();
+	expect(fixture.obj).toBeDefined();
+
+	const td = new TreeData(fixture.obj["treeData"]);
+	expect(td).toBeDefined();
+	expect(td.treeIndex).toBeDefined();
+	expect(td.treeIndex[0].title).toBe("1.0");
+	expect(td.treeIndex[3].title).toBe("1.3");
+	expect(td.treeIndex[9].title).toBe("3.1");
+});
+
+test("Test turning off TreeData index and showing a value is not in the list", () => {
+	const fixture = new Fixture("search");
+	expect(fixture).toBeDefined();
+	expect(fixture.obj).toBeDefined();
+
+	const td = new TreeData(
+		fixture.obj["treeData"],
+		true,
+		0,
+		"default",
+		false, // turn off indexing
+		true
+	);
+	expect(td).toBeDefined();
+	expect(td.treeIndex).toBeDefined();
+	expect(td.treeIndex).not.toContain(0);
+	expect(td.treeIndex).not.toContain(3);
+	expect(td.treeIndex).not.toContain(9);
 });

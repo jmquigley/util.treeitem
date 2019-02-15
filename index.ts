@@ -30,6 +30,10 @@ export interface TreeItem {
 	children?: TreeItem[];
 }
 
+export interface TreeIndex {
+	[key: string]: TreeItem;
+}
+
 export type WalkCallback = (val: TreeItem) => void;
 export type ComparatorFn = (it: TreeItem) => boolean;
 
@@ -45,6 +49,7 @@ const nullParent: TreeItem = {
 
 export class TreeData {
 	private _treeData: TreeItem[];
+	private _treeIndex: TreeIndex = {};
 
 	/**
 	 * Creates an instance of the TreeData class.  When the data is loaded via
@@ -54,12 +59,25 @@ export class TreeData {
 	 * @contructor
 	 * @param treeData {TreeItem[]} the data that represents the current general
 	 * tree.
+	 * @param _testing {boolean} (false) set to true when this class is under
+	 * test.  This is needed to generate predicatble keys instead of UUID values
+	 * @param _sequence {number} (0) the starting sequence number in key generation
+	 * when the class is under test.
+	 * @param _defaultTitle {string} ("default") the default string loadeed into
+	 * the TreeItem.title field when a new node is created or sanitized.
+	 * @param _useindex {boolean} (true) turns on a map index of the node values
+	 * that are loaded into the tree.  Used for a fast id lookup.
+	 * @param _usesanitize {boolean} (true) when new nodes are processed by
+	 * the walk function each node is checked by default to ensure parent/child
+	 * keys are set and all fields are in the TreeItem.
 	 */
 	constructor(
 		treeData: TreeItem[],
-		private _testing: boolean = false,
+		private readonly _testing: boolean = false,
 		private _sequence: number = 0,
-		private _defaultTitle: string = "default"
+		private _defaultTitle: string = "default",
+		private readonly _useindex: boolean = true,
+		private readonly _usesanitize: boolean = true
 	) {
 		this.treeData = treeData;
 	}
@@ -86,12 +104,27 @@ export class TreeData {
 
 	set treeData(val: TreeItem[]) {
 		this._treeData = val;
-		this.walk(nilEvent);
+
+		if (val != null) {
+			this.walk(nilEvent);
+		}
+	}
+
+	get treeIndex(): TreeIndex {
+		return this._treeIndex;
+	}
+
+	get useindex(): boolean {
+		return this._useindex;
+	}
+
+	get usesanitize(): boolean {
+		return this._usesanitize;
 	}
 
 	/**
 	 * Creates a new node object with default properties.
-	 * @param parentNode a parent node associated with this instance
+	 * @param parentNode {TreeItem }a parent node associated with this instance
 	 * @return {TreeItem} a new node instance reference
 	 */
 	public createNode(parentNode: TreeItem = null): TreeItem {
@@ -130,7 +163,13 @@ export class TreeData {
 
 			item = q.dequeue();
 			if (item.id === id) {
+				// If found, get rid of all remaining q items and return
 				q.drain();
+
+				if (this.useindex) {
+					this._treeIndex[item.id] = item;
+				}
+
 				return item;
 			} else {
 				children = item.children;
@@ -159,10 +198,6 @@ export class TreeData {
 	 * Takes an input node and ensures that it has all possible fields.	 It
 	 * also creates the node key value if one does not exist.
 	 * @param node {TreeItem} the node to fix
-	 * @param testing {boolean} a flag that denotes the module is under testing
-	 * When testing the keys are generated as a sequence instead of as a UUID
-	 * @param defaultTitle {string} ('default') a default string set for the
-	 * title if it doesn't exist or is empty.
 	 * @return {TreeItem} a referece back of the node that was sanitized
 	 */
 	public sanitize(node: TreeItem): TreeItem {
@@ -225,26 +260,36 @@ export class TreeData {
 	 * is given as a parameter.
 	 * @param fn {WalkCallback} a callback function invoked on each
 	 * node as it is encountered.
-	 * @param usesanitize {boolean} (true) if true it validates the
-	 * contents of each TreeItem encountered
 	 * @return {TreeeItem[]} a reference to the tree structure that was
 	 * processed.
 	 */
-	public walk(fn: WalkCallback, usesanitize: boolean = true): TreeItem[] {
-		if (fn != null && typeof fn !== "function") {
-			throw new Error("walk() parameter must be a function");
-		}
-
-		if (this.treeData == null) {
-			log.warn("treeData is empty");
+	public walk(fn: WalkCallback): TreeItem[] {
+		if (fn == null || typeof fn !== "function") {
+			log.warn("walk() parameter must be a function");
 			return null;
 		}
 
-		const self: any = this;
+		if (this._treeData == null) {
+			log.warn("treeData is empty on call to walk()");
+			return null;
+		}
+
+		// creates a binding to this for preorder call that will
+		// have its own .this pointer not related to the class.
+		const self: TreeData = this;
+		if (this._useindex) {
+			this._treeIndex = {};
+		}
 
 		function preorder(arr: TreeItem[]) {
-			for (const it of arr) {
-				fn(usesanitize ? self.sanitize(it) : it);
+			for (let it of arr) {
+				it = self.usesanitize ? self.sanitize(it) : it;
+
+				if (self._useindex) {
+					self._treeIndex[it.id] = it;
+				}
+
+				fn(it);
 
 				if ("children" in it && it.children.length > 0) {
 					for (const child of it.children) {
@@ -256,7 +301,7 @@ export class TreeData {
 			}
 		}
 
-		preorder(this.treeData);
-		return this.treeData;
+		preorder(this._treeData);
+		return this._treeData;
 	}
 }
