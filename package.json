@@ -1,6 +1,6 @@
 {
 	"name": "util.treeitem",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"debug": false,
 	"author": "jmquigley <jmquigley@outlook.com>",
 	"description": "Utility functions for working with the Treeview component in the gadgets library",
