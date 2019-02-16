@@ -198,10 +198,10 @@ export class TreeData {
 	 * the keys predictable when the code is under test.
 	 * @return {string} the new key value.
 	 */
-	public getNewKey(): string {
+	public getNewKey(): TreeId {
 		if (this._testing) {
 			log.debug(`Creating testing key with sequence: ${this.sequence}`);
-			return `${this.sequence++}`;
+			return this.sequence++;
 		}
 
 		return getUUID();

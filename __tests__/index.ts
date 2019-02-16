@@ -32,9 +32,9 @@ test("Test the getNewKey function", () => {
 	expect(td.testing).toBe(true);
 	expect(td.defaultTitle).toBe("default");
 	expect(td.treeData).toBeNull();
-	expect(td.getNewKey()).toBe("0");
-	expect(td.getNewKey()).toBe("1");
-	expect(td.getNewKey()).toBe("2");
+	expect(td.getNewKey()).toBe(0);
+	expect(td.getNewKey()).toBe(1);
+	expect(td.getNewKey()).toBe(2);
 });
 
 test("Test the create node function", () => {
@@ -56,7 +56,7 @@ test("Test the create node function", () => {
 	expect(node.title).toBe("test title");
 	expect(node.subtitle).toBe("");
 	expect(node.expanded).toBe(true);
-	expect(node.id).toBe("0");
+	expect(node.id).toBe(0);
 	expect(node.parent).toBeDefined();
 	expect(node.data).toBe("");
 	expect(node.children).toBeInstanceOf(Array);
@@ -82,9 +82,9 @@ test("Test the create node function with parent object", () => {
 	expect(node.title).toBe("default");
 	expect(node.subtitle).toBe("");
 	expect(node.expanded).toBe(true);
-	expect(node.id).toBe("1");
+	expect(node.id).toBe(1);
 	expect(node.parent).toBeDefined();
-	expect(node.parent.id).toBe("0");
+	expect(node.parent.id).toBe(0);
 	expect(node.data).toBe("");
 	expect(node.children).toBeInstanceOf(Array);
 	expect(node.children.length).toBe(0);
