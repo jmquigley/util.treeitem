@@ -109,6 +109,8 @@ test("Test the walk function on a basic TreeItem fixture object", () => {
 	expect(td.toString()).toBeDefined();
 	expect(typeof td.toString()).toBe("string");
 
+	log.debug(td.toString());
+
 	// Walk through the tree.  Concatenate the title values together
 	// to create a string that can be compared for ordering
 	let out: string = "";

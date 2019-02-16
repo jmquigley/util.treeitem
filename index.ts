@@ -14,7 +14,8 @@ import {getUUID, nilEvent} from "util.toolbox";
 const pkg = require("./package.json");
 const log = logger.instance({
 	debug: pkg.debug,
-	namespace: "treeitem"
+	namespace: "treeitem",
+	nofile: true
 });
 
 export type TreeId = string | number;
