@@ -1,9 +1,11 @@
 "use strict";
 
+import * as path from "path";
 import {nl} from "util.constants";
 import {Fixture} from "util.fixture";
 import logger from "util.log";
 import {TreeData, TreeItem} from "../index";
+import {cleanup} from "./helpers";
 
 const pkg = require("../package.json");
 const log = logger.instance({
@@ -11,6 +13,10 @@ const log = logger.instance({
 	namespace: "treeitem.test"
 });
 const testing: boolean = true;
+
+afterAll((done) => {
+	cleanup(path.basename(__filename), done);
+});
 
 test("Test using an empty TreeData structure", () => {
 	const td = new TreeData(null);

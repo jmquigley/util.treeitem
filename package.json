@@ -53,7 +53,8 @@
 	"jest": {
 		"collectCoverage": true,
 		"coveragePathIgnorePatterns": [
-			"<rootDir>/node_modules/"
+			"<rootDir>/__tests__/helpers",
+			"<rootDir>/node_modules"
 		],
 		"moduleFileExtensions": [
 			"js",
@@ -67,7 +68,7 @@
 			"<rootDir>/__tests__/helpers",
 			"<rootDir>/node_modules"
 		],
-		"verbose": false
+		"verbose": true
 	},
 	"scripts": {
 		"all": "yarn install && yarn run prettier && yarn run build && yarn run docs && yarn test",
@@ -79,6 +80,6 @@
 		"prepublishOnly": "yarn run all",
 		"prettier": "prettier --write \"**/*.{ts,tsx,json,yaml,yml,css}\"",
 		"report": "pkgwrap --reporting",
-		"test": "jest --verbose"
+		"test": "jest"
 	}
 }
