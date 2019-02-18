@@ -4,8 +4,6 @@
 	"debug": false,
 	"author": "jmquigley <jmquigley@outlook.com>",
 	"description": "Utility functions for working with the Treeview component in the gadgets library",
-	"main": "./index.js",
-	"types": "./index.d.ts",
 	"private": false,
 	"license": "MIT",
 	"repository": {
@@ -18,10 +16,12 @@
 	"engines": {
 		"node": ">=7.x"
 	},
+	"main": "./index.min.js",
+	"types": "./index.d.ts",
 	"dependencies": {
-		"util.constants": "^0.0.16",
-		"util.ds": "^0.0.39",
-		"util.log": "^0.0.36"
+		"util.constants": "^0.0.18",
+		"util.ds": "^0.0.42",
+		"util.log": "^0.0.37"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.3.3",
@@ -29,9 +29,9 @@
 		"@babel/preset-typescript": "^7.3.3",
 		"@babel/runtime": "^7.3.1",
 		"@types/fs-extra": "5.0.5",
-		"@types/jest": "^24.0.5",
+		"@types/jest": "^24.0.6",
 		"@types/node": "^11.9.4",
-		"babel-jest": "^24.1.0",
+		"babel-minify": "^0.5.0",
 		"coveralls": "^3.0.2",
 		"fs-extra": "^7.0.1",
 		"jest": "^24.1.0",
@@ -39,47 +39,26 @@
 		"tslint": "^5.12.1",
 		"tslint-config-prettier": "^1.18.0",
 		"typescript": "^3.3.3",
-		"util.fixture": "0.0.65",
-		"util.pkgwrap": "^0.0.94"
+		"util.fixture": "0.0.66",
+		"util.pkgwrap": "^0.0.98"
 	},
 	"pkgwrap": {
 		"cleanup": [
 			"docs",
-			"logs",
-			"index.d.ts",
-			"index.js"
+			"logs"
 		]
 	},
-	"jest": {
-		"collectCoverage": true,
-		"coveragePathIgnorePatterns": [
-			"<rootDir>/__tests__/helpers",
-			"<rootDir>/node_modules"
-		],
-		"moduleFileExtensions": [
-			"js",
-			"jsx",
-			"ts",
-			"tsx",
-			"json"
-		],
-		"notify": false,
-		"testPathIgnorePatterns": [
-			"<rootDir>/__tests__/helpers",
-			"<rootDir>/node_modules"
-		],
-		"verbose": true
-	},
 	"scripts": {
-		"all": "yarn install && yarn run prettier && yarn run build && yarn run docs && yarn test",
-		"build": "yarn run clean && yarn run lint && pkgwrap --build",
+		"all": "yarn install && yarn prettier && yarn build && yarn docs && yarn test && yarn minify",
+		"build": "yarn clean && yarn lint && pkgwrap --build",
 		"clean": "pkgwrap --clean",
-		"clean:dist": "rimraf node_modules/ yarn.lock",
+		"clean:dist": "yarn clean && rimraf node_modules/ yarn.lock",
 		"coverage": "pkgwrap --coverage --jest",
 		"docs": "pkgwrap --docs",
 		"lint": "pkgwrap --lint",
+		"minify": "minify ./index.js --out-file ./index.min.js",
 		"prepublishOnly": "yarn run all",
-		"prettier": "prettier --write \"**/*.{ts,tsx,json,yaml,yml,css}\"",
+		"prettier": "prettier --write \"**/*.{ts,tsx,js,json,yaml,yml,css}\"",
 		"report": "pkgwrap --reporting",
 		"test": "jest"
 	}
